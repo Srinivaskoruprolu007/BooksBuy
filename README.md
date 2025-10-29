@@ -6,13 +6,14 @@ This README replaces the default Vite template copy with focused project setup a
 
 ## Tech stack
 
-- React 19
-- Vite
-- Tailwind CSS
-- Supabase (JS client)
-- React Router
-- React Hook Form + Zod
-- TanStack Query (React Query)
+- 🟦 React 19
+- ⚡ Vite
+- 🎨 Tailwind CSS
+- ☁️ Supabase (JS client)
+- 🧭 React Router
+- 🧰 React Hook Form
+- 🧩 Zod (validation)
+- 🔁 TanStack Query (React Query)
 
 ## Quick start
 
@@ -22,24 +23,30 @@ This README replaces the default Vite template copy with focused project setup a
 npm install
 ```
 
-2. Create a local environment file
+1. Create a local environment file
 
-Create a `.env` file in the project root (do NOT commit it). The app expects the following variables:
+Copy the provided example and create a `.env` file in the project root (do NOT commit it):
 
+```bash
+cp .env.example .env
 ```
+
+The `.env.example` contains the expected variables:
+
+```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 These variable names come from `src/lib/supabaseClient.js` where the Supabase client is created from `import.meta.env.VITE_SUPABASE_URL` and `import.meta.env.VITE_SUPABASE_ANON_KEY`.
 
-3. Start the dev server
+1. Start the dev server
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:5173 in your browser (or the port Vite reports).
+Open [http://localhost:5173](http://localhost:5173) in your browser (or the port Vite reports).
 
 ## Available scripts
 
@@ -58,11 +65,11 @@ The scripts are defined in `package.json`.
 ## Project structure (high level)
 
 - `src/` — application source
-	- `src/lib/supabaseClient.js` — Supabase client initialization
-	- `src/pages/` — page components (Home, Books, Admin, Profile, etc.)
-	- `src/components/` — shared UI and guards
-	- `src/hooks/` — custom hooks (e.g., `useBooks.js`)
-	- `src/schemas/` — Zod schemas for forms
+  - `src/lib/supabaseClient.js` — Supabase client initialization
+  - `src/pages/` — page components (Home, Books, Admin, Profile, etc.)
+  - `src/components/` — shared UI and guards
+  - `src/hooks/` — custom hooks (e.g., `useBooks.js`)
+  - `src/schemas/` — Zod schemas for forms
 
 ## Contributing
 
@@ -71,12 +78,3 @@ Small changes and fixes are welcome. Please include a short description of the c
 ## License
 
 This repository currently has no license file. Add one if you plan to share or publish this project.
-
----
-
-If you'd like, I can also:
-- add a `.env.example` file
-- add a one-line CI/deploy workflow for Vercel/GitHub Actions
-- add npm run scripts for formatting/tests if you want them
-
-Tell me what you'd like next.
