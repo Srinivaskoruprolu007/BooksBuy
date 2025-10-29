@@ -7,7 +7,6 @@ const fetchProfile = async (userId) => {
     .select("*")
     .eq("id", userId)
     .single();
-
   if (error) throw error;
   return data;
 };
@@ -17,33 +16,39 @@ const upsertProfile = async (profileData) => {
     data: { user },
   } = await supabase.auth.getUser();
   const { data, error } = await supabase
-    .from("profile")
+    .from("profiles")
     .upsert({ ...profileData, id: user.id })
     .select()
     .single();
 
   if (error) throw error;
-  throw data;
+  return data;
 };
 
 const uploadAvatar = async (file) => {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const fileName = `${user.id}/${Date.now()}_${file.name}`;
+
+  const ext = file.name.split(".").pop();
+  const fileName = `${user.id}/avatar.${ext}`;
+
   const { error: uploadError } = await supabase.storage
     .from("avatars")
     .upload(fileName, file, { upsert: true });
+
   if (uploadError) throw uploadError;
+
   const {
     data: { publicUrl },
-  } = supabase.storage.from("avatars").getPublicUrl();
-  return publicUrl;
+  } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+  return `${publicUrl}?v=${Date.now()}`;
 };
 
 export const useProfile = (userId) => {
   return useQuery({
-    queryKey: ["profile", userId],
+    queryKey: ["profiles", userId],
     queryFn: () => fetchProfile(userId),
     enabled: !!userId,
   });
@@ -54,24 +59,34 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: upsertProfile,
     onSuccess: (data) => {
-      queryClient.setQueryData(["profile", data.id], data);
+      queryClient.setQueryData(["profiles", data.id], data);
     },
   });
 };
 
 export const useUploadAvatar = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: uploadAvatar,
     onSuccess: async (avatarUrl) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      queryClient.setQueryData(["profile", user.id], (old) => ({
-        ...old,
-        avatar_url: avatarUrl,
-      }));
-      supabase.from("profiles").update({ avatar_url: avatarUrl });
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("id", user.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Failed updating avatar_url", error);
+        return;
+      }
+
+      queryClient.setQueryData(["profiles", user.id], data);
     },
   });
 };
