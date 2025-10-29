@@ -9,6 +9,7 @@ import Layout from "./components/Layout.jsx";
 import { AuthGuard } from "./components/AuthGuard.jsx";
 import { AdminGuard } from "./components/AdminGuard.jsx";
 import { GuestGuard } from "./components/GuestGuard.jsx";
+import { Toaster } from "react-hot-toast";
 
 // Lazy-loaded pages for ✨speedy first load✨
 const Home = lazy(() => import("./pages/Home.jsx"));
@@ -63,6 +64,19 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <Suspense fallback={<p style={{ padding: 20 }}>Loading… 🌈</p>}>
         <RouterProvider router={router} />
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: "#fff",
+              color: "#333",
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              padding: "12px 16px",
+            },
+          }}
+        />
       </Suspense>
     </QueryClientProvider>
   </StrictMode>
